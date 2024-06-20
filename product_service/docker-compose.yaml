@@ -1,0 +1,36 @@
+version: latest
+
+services:
+  api:
+    container_name: api
+    build: .
+    volumes:
+      - .:/api
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+      - mongo-express
+    command: uvicorn main:app_factory --factory --port 8000 --host 0.0.0.0 --reload
+
+  mongodb:
+    container_name: mongo-main
+    image: mongo:6-jammy
+    env_file:
+      .env
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongodb/data:/mongodb/data
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - 28081:8081
+    env_file:
+      .env
+    depends_on:
+      - mongodb

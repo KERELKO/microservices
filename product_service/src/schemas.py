@@ -5,6 +5,7 @@ from .models import Product
 
 
 class ProductSchema(Schema):
+    id: str = ''
     title: str = ''
     price: float = 0.0
     description: str = ''
