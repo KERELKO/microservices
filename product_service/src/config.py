@@ -9,10 +9,10 @@ class Config(BaseSettings):
 
     @property
     def mongo_db_uri(self) -> str:
-        return f'mongodb://{self.MONGO_DB_HOST}:{self.MONGO_DB_PORT}'
+        return f'mongodb://{self.MONGO_DB_HOST}:{self.MONGO_DB_PORT}/'
 
     def get_async_mongo_client(self) -> AsyncIOMotorClient:
-        return AsyncIOMotorClient(self.MONGO_DB_HOST, self.MONGO_DB_PORT)
+        return AsyncIOMotorClient(host=self.MONGO_DB_HOST, port=int(self.MONGO_DB_PORT))
 
 
 config = Config()  # type: ignore
