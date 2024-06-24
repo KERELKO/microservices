@@ -1,0 +1,12 @@
+version: latest
+
+services:
+  postgresdb:
+    container_name: postgresdb
+    image: postgres:latest
+    volumes:
+      ./psql/:/var/lib/postgres
+    ports:
+      - 5432:5432
+    env_file:
+      - .env

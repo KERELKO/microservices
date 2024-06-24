@@ -19,3 +19,7 @@ class ProductService(AbstractService[Product]):
     async def get_by_id(self, id: str) -> Product | None:
         product = await self.repo.get(id=id)
         return product
+
+
+class UserService:
+    ...
