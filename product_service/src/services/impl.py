@@ -21,5 +21,6 @@ class ProductService(AbstractService[Product]):
         return product
 
 
-class UserService:
-    ...
+class RMQUserService:
+    def __init__(self, rmq_host: str, rmq_port: int) -> None:
+        ...

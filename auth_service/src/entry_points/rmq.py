@@ -5,7 +5,7 @@ from src.config import config
 
 
 def handle_rmq_request(ch, method, properties: pika.BasicProperties, body: str | bytes) -> None:
-    request = json.loads(body)
+    # request = json.loads(body)
 
     ch.basic_publish(
         exchange='',

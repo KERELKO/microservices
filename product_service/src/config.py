@@ -7,6 +7,9 @@ class Config(BaseSettings):
     MONGO_DB_HOST: str
     MONGO_DB_PORT: str
 
+    RMQ_HOST: str
+    RMQ_PORT: int
+
     @property
     def mongo_db_uri(self) -> str:
         return f'mongodb://{self.MONGO_DB_HOST}:{self.MONGO_DB_PORT}/'

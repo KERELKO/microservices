@@ -4,13 +4,13 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String
 
-from src.dto import UserDTO
-from .config import config
+from auth_service.src.dto.domain import UserSecureDTO
+from src.config import config
 
 
 engine = create_async_engine(config.postgres_uri)
 async_session_factory = async_sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=True,
+    engine, class_=AsyncSession, expire_on_commit=False,
 )
 
 
@@ -33,9 +33,8 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(30))
-    email: Mapped[str] = mapped_column(String(40), default='')
     hashed_password: Mapped[str] = mapped_column(String(100))
-    token: Mapped[str] = mapped_column(String(100), default='')
+    email: Mapped[str] = mapped_column(String(40), default='')
 
     def __repr__(self) -> str:
         return f'User(id={self.id} username={self.username} email={self.email})'
@@ -45,10 +44,9 @@ class User(Base):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'hashed_password': self.hashed_password,
-            'token': self.token,
+            'hashed_password': self.hashed_password
         }
         return data
 
-    def to_dto(self) -> UserDTO:
-        return UserDTO(**self.as_dict())
+    def to_dto(self) -> UserSecureDTO:
+        return UserSecureDTO(**self.as_dict())
