@@ -1,11 +1,22 @@
 version: latest
 
 services:
-  postgresdb:
-    container_name: postgresdb
+  app:
+    container_name: app
+    build: .
+    volumes:
+      - .:/app
+    command: ./entrypoint.sh
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    container_name: postgres
     image: postgres:latest
     volumes:
-      ./psql/:/var/lib/postgres
+      - ./psql/:/var/lib/postgres
     ports:
       - 5432:5432
     env_file:

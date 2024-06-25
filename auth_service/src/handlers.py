@@ -1,4 +1,10 @@
+from typing import Any
+
 from src.dto import UserDTO
+
+
+def dispatch(json_data: dict) -> Any:
+    ...
 
 
 def register_user(user_data: UserDTO):

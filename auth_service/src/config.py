@@ -8,10 +8,13 @@ class Config:
 
     POSTGRES_DIALECT: str = 'postgresql+asyncpg'
     POSTGRES_PORT: int = int(os.getenv('POSTGRES_PORT', 5432))
-    POSTGRES_HOST: str = os.getenv('POSTGRES_HOST', 'postgres')
+    POSTGRES_HOST: str = os.getenv('POSTGRES_HOST', 'db')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', 'postgres')
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
     POSTGRES_DB: str = os.getenv('POSTGRES_DB', 'db')
+
+    RMQ_HOST: str = os.getenv('RABBITMQ_HOST', 'rabbitmq')
+    RMQ_PORT: int = int(os.getenv('RABBITMQ_PORT', 6379))
 
     @property
     def postgres_uri(self) -> str:
