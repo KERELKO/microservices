@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from auth_service.src.dto.domain import UserSecureDTO, UserReadDTO
+from src.dto.domain import UserSecureDTO, UserReadDTO
 
 
 class AbstractUserRepository(ABC):

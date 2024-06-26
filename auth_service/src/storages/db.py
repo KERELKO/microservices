@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String
 
-from auth_service.src.dto.domain import UserSecureDTO
+from src.dto.domain import UserSecureDTO
 from src.config import config
 
 

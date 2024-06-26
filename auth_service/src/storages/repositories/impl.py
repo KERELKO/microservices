@@ -3,8 +3,8 @@ from dataclasses import asdict
 import sqlalchemy as sql
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from auth_service.src.storages.db import User, async_session_factory
-from auth_service.src.dto.domain import UserSecureDTO, UserReadDTO
+from src.storages.db import User, async_session_factory
+from src.dto.domain import UserSecureDTO, UserReadDTO
 
 from .base import AbstractUserRepository
 
