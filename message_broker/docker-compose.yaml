@@ -10,3 +10,11 @@ services:
       - ./rabbitmq/log/:/var/log/rabbitmq
     env_file:
       - .env
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
+    name: microservices
+    external: true

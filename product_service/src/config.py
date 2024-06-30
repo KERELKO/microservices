@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 
 
 class Config(BaseSettings):
@@ -7,8 +8,8 @@ class Config(BaseSettings):
     MONGO_DB_HOST: str
     MONGO_DB_PORT: str
 
-    RMQ_HOST: str
-    RMQ_PORT: int
+    RMQ_HOST: str = Field(default='rabbitmq')
+    RMQ_PORT: int = Field(default=5672)
 
     @property
     def mongo_db_uri(self) -> str:

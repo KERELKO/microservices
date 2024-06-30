@@ -1,11 +1,11 @@
 version: latest
 
 services:
-  api:
-    container_name: api
+  product-app:
+    container_name: product-app
     build: .
     volumes:
-      - .:/api
+      - .:/app
     ports:
       - 8000:8000
     env_file:
@@ -14,6 +14,8 @@ services:
       - mongodb
       - mongo-express
     command: uvicorn main:app_factory --factory --port 8000 --host 0.0.0.0 --reload
+    networks:
+      - network
 
   mongodb:
     container_name: mongo-main
@@ -24,6 +26,8 @@ services:
       - 27017:27017
     volumes:
       - ./mongodb/data:/mongodb/data
+    networks:
+      - network
 
   mongo-express:
     image: mongo-express
@@ -34,3 +38,11 @@ services:
       .env
     depends_on:
       - mongodb
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
+    name: microservices
+    external: true

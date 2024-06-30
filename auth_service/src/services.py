@@ -30,9 +30,7 @@ class AuthService:
         user = await self.get_user(
             username=username if username else raise_exc(IncorrectCredentialsException()),
         )
-        if user is None:
-            raise IncorrectCredentialsException
-        return user
+        return user if user else raise_exc(IncorrectCredentialsException())
 
     async def register_user(self, dto: UserDTO) -> UserReadDTO:
         password = dto.password if dto.password else raise_exc(
@@ -57,6 +55,16 @@ class AuthService:
             return False
         return user
 
+    async def login(self, username: str, password: str) -> str:
+        user: UserSecureDTO | bool = await self.authenticate_user(username, password)
+        if user is False:
+            raise IncorrectCredentialsException
+        access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = self.create_access_token(
+            data={'sub': user.username}, expires_delta=access_token_expires,  # type: ignore
+        )
+        return access_token
+
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         return self.pwd_context.verify(plain_password, hashed_password)
 
@@ -72,7 +80,9 @@ class AuthService:
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+            expire = datetime.now(timezone.utc) + timedelta(
+                minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
+            )
         to_encode.update({'exp': expire})
         encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
         return encoded_jwt

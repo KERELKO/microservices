@@ -2,6 +2,7 @@ from dataclasses import asdict
 
 import sqlalchemy as sql
 from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy import exc
 
 from src.storages.db import User, async_session_factory
 from src.dto.domain import UserSecureDTO, UserReadDTO
@@ -29,5 +30,8 @@ class UserRepository(AbstractUserRepository):
     async def get_by_username(self, username: str) -> UserSecureDTO | None:
         async with self.session_factory() as session:
             stmt = sql.select(User).where(User.username == username)
-            user: User | None = (await session.execute(stmt)).scalar_one()
+            try:
+                user: User | None = (await session.execute(stmt)).scalar_one()
+            except exc.NoResultFound:
+                return None
             return user.to_dto() if user else None

@@ -1,3 +1,5 @@
+import json
+from typing import Any
 import pika
 import uuid
 
@@ -32,33 +34,34 @@ class RPCAuthClient:
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host, port=port))
         self.channel = self.connection.channel()
 
-        result = self.channel.queue_declare(queue='', exclusive=True)
+        result = self.channel.queue_declare(queue='auth_queue', exclusive=True)
         self.callback_queue = result.method.queue
 
         self.channel.basic_consume(
             queue=self.callback_queue,
             on_message_callback=self.on_response,
-            auto_ack=True)
+            auto_ack=True,
+        )
 
-        self.response: str | bytes | None = None
+        self.response: None | dict[str, Any] = None
         self.corr_id: str | None = None
 
     def on_response(self, ch, method, props: pika.BasicProperties, body: str | bytes) -> None:
         if self.corr_id == props.correlation_id:
-            self.response = body
+            self.response = json.loads(body)
 
-    def call(self, n) -> int:
-        self.response: None | str | bytes = None
+    def call(self, data: dict[str, Any]) -> dict[str, Any]:
+        self.response: None | dict[str, Any] = None  # type: ignore
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
             exchange='',
-            routing_key='rpc_queue',
+            routing_key='auth_queue',
             properties=pika.BasicProperties(
                 reply_to=self.callback_queue,
                 correlation_id=self.corr_id,
             ),
-            body=str(n)
+            body=json.dumps(data)
         )
         while self.response is None:
             self.connection.process_data_events(time_limit=3)
-        return int(self.response)
+        return self.response

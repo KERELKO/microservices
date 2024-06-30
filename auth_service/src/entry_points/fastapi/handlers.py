@@ -1,5 +1,4 @@
 from dataclasses import asdict
-from datetime import timedelta
 from typing import Annotated
 
 from fastapi import Depends, APIRouter
@@ -8,7 +7,6 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from src.dto.domain import UserDTO
 from src.services import AuthService
 from src.dto.schemas import Token, UserIn, UserOut
-from src.config import config
 from src import exceptions
 
 from .exceptions import IncorrectCredentialsException
@@ -32,13 +30,20 @@ async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
     service = AuthService()
-    user = await service.authenticate_user(form_data.username, form_data.password)
-    if user is False:
+    try:
+        access_token = await service.login(form_data.username, form_data.password)
+    except exceptions.IncorrectCredentialsException:
         raise IncorrectCredentialsException
-    access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = service.create_access_token(
-        data={'sub': user.username}, expires_delta=access_token_expires,  # type: ignore
-    )
+    return Token(access_token=access_token, token_type='bearer')
+
+
+@router.post('/login')
+async def login(username: str, password: str) -> Token:
+    service = AuthService()
+    try:
+        access_token = await service.login(username, password)
+    except exceptions.IncorrectCredentialsException:
+        raise IncorrectCredentialsException
     return Token(access_token=access_token, token_type='bearer')
 
 
