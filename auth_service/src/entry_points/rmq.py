@@ -19,7 +19,7 @@ def handle_rmq_request(ch, method, properties: pika.BasicProperties, body: str |
 
 def start_service():
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=config.RMQ_HOST, port=config.RMQ_PORT),
+        parameters=pika.ConnectionParameters(host=config.RMQ_HOST, port=config.RMQ_PORT),
     )
     channel = connection.channel()
     channel.queue_declare('auth_queue')

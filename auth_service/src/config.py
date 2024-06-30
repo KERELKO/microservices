@@ -16,6 +16,10 @@ class Config:
     RMQ_HOST: str = os.getenv('RABBITMQ_HOST', 'rabbitmq')
     RMQ_PORT: int = int(os.getenv('RABBITMQ_PORT', 6379))
 
+    SECRET_KEY: str = 'c32d7bb1aa31c88979d174470152f446eb98351e1ae3c9ccb594dcc413261ed4'
+    ALGORITHM: str = 'HS256'
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
     @property
     def postgres_uri(self) -> str:
         user_pwd = f'{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}'

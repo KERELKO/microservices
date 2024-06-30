@@ -12,7 +12,7 @@ class ProductMongoRepository(AbstractRepository[Product]):
     class Meta:
         dto = Product
         id_field = 'id'
-        collection = config.get_async_mongo_client()['product_db']['products_1']
+        collection = config.get_async_mongo_client()['products_db']['products']
 
     async def get_list(self, offset: int = 0, limit: int = 20) -> list[Product]:
         return await self._get_list(offset=offset, limit=limit)  # type: ignore
