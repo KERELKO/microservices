@@ -11,7 +11,7 @@ init_tables()
 
 function start_api_service() {
     echo "------Starting FastAPI application-------"
-    uvicorn src.entry_points.fastapi.main:app_factory --factory --reload --port 8000 --host 0.0.0.0
+    uvicorn src.entry_points.fastapi.main:app_factory --factory --reload --port 8001 --host 0.0.0.0
 }
 
 function start_rmq_service {
@@ -24,5 +24,6 @@ start_service()
 
 
 init_tables
-# start_api_service
-start_rmq_service
+start_api_service &
+start_rmq_service &
+wait

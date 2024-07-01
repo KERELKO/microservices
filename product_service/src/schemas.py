@@ -17,7 +17,6 @@ class ProductSchema(Schema):
 
 
 class UserSchema(Schema):
-    id: str = ''
+    id: int | None = None
     username: str = ''
-    password: str = ''
-    token: str = ''
+    email: str = ''

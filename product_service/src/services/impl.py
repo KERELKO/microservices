@@ -1,9 +1,8 @@
 import json
 from typing import Any
+
 import pika
 import uuid
-
-import pika.channel
 
 from src.repositories.base import AbstractRepository
 from src.repositories.mongo import ProductMongoRepository
@@ -33,8 +32,7 @@ class RPCAuthClient:
     def __init__(self, host: str = config.RMQ_HOST, port: int = config.RMQ_PORT) -> None:
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host, port=port))
         self.channel = self.connection.channel()
-
-        result = self.channel.queue_declare(queue='auth_queue', exclusive=True)
+        result = self.channel.queue_declare(queue='', exclusive=True)
         self.callback_queue = result.method.queue
 
         self.channel.basic_consume(
@@ -42,8 +40,6 @@ class RPCAuthClient:
             on_message_callback=self.on_response,
             auto_ack=True,
         )
-
-        self.response: None | dict[str, Any] = None
         self.corr_id: str | None = None
 
     def on_response(self, ch, method, props: pika.BasicProperties, body: str | bytes) -> None:
@@ -51,7 +47,7 @@ class RPCAuthClient:
             self.response = json.loads(body)
 
     def call(self, data: dict[str, Any]) -> dict[str, Any]:
-        self.response: None | dict[str, Any] = None  # type: ignore
+        self.response: None | dict[str, Any] = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
             exchange='',

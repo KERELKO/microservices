@@ -37,16 +37,6 @@ async def login_for_access_token(
     return Token(access_token=access_token, token_type='bearer')
 
 
-@router.post('/login')
-async def login(username: str, password: str) -> Token:
-    service = AuthService()
-    try:
-        access_token = await service.login(username, password)
-    except exceptions.IncorrectCredentialsException:
-        raise IncorrectCredentialsException
-    return Token(access_token=access_token, token_type='bearer')
-
-
 @router.get('/users/me/', response_model=UserOut)
 async def read_users_me(
     current_user: Annotated[UserOut, Depends(get_current_user)],

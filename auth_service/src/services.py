@@ -20,6 +20,7 @@ class AuthService:
         return await self.repository.get_by_username(username=username)
 
     async def get_user_by_token(self, token: str) -> UserSecureDTO:
+        """Returns a user or raises `IncorrectCredentialsException` exception"""
         try:
             payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
             username: str = payload.get('sub')
@@ -27,9 +28,7 @@ class AuthService:
                 raise IncorrectCredentialsException
         except jwt.InvalidTokenError:
             raise IncorrectCredentialsException
-        user = await self.get_user(
-            username=username if username else raise_exc(IncorrectCredentialsException()),
-        )
+        user = await self.get_user(username=username)
         return user if user else raise_exc(IncorrectCredentialsException())
 
     async def register_user(self, dto: UserDTO) -> UserReadDTO:
