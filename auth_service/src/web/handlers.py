@@ -4,20 +4,21 @@ from typing import Annotated
 from fastapi import Depends, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from src.dto.domain import UserDTO
-from src.services import AuthService
-from src.dto.schemas import Token, UserIn, UserOut
-from src import exceptions
+from src.common.dto import UserInputDTO
+from src.common.di import Container
+from src.common import exceptions
+from src.services.auth import AuthService
+from src.web.schemas import Token, UserIn, UserOut
 
 from .exceptions import IncorrectCredentialsException
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/token')
-router = APIRouter(prefix='/auth')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/v1/auth/token')
+router = APIRouter(prefix='/v1/auth')
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    service = AuthService()
+    service = Container.resolve(AuthService)
     try:
         user = await service.get_user_by_token(token=token)
     except exceptions.IncorrectCredentialsException:
@@ -29,7 +30,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
-    service = AuthService()
+    service = Container.resolve(AuthService)
     try:
         access_token = await service.login(form_data.username, form_data.password)
     except exceptions.IncorrectCredentialsException:
@@ -46,7 +47,7 @@ async def read_users_me(
 
 @router.post('/register', response_model=UserOut)
 async def register_user(user_data: UserIn) -> UserOut:
-    service = AuthService()
-    dto = UserDTO(**user_data.model_dump())
+    service = Container.resolve(AuthService)
+    dto = UserInputDTO(**user_data.model_dump())
     new_user = await service.register_user(dto)
     return UserOut(**asdict(new_user))

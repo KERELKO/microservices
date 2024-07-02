@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
-from src.dto.domain import UserSecureDTO, UserReadDTO
+from src.common.dto import UserSecureDTO
 
 
 class AbstractUserRepository(ABC):
     @abstractmethod
-    async def add(self, user: UserSecureDTO) -> UserReadDTO:
+    async def add(self, user: UserSecureDTO) -> UserSecureDTO:
         ...
 
     @abstractmethod

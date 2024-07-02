@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 
 function init_tables() {
-    echo "------ Starting initalizing of the tables -----"
+    echo "Starting to initialize tables..."
     python3 -c "
-from src.storages.db import init_tables
+from src.common.db.sqlalchemy.config import init_tables
 init_tables()
 "
-    echo "------ Tables initialized -----"
+    echo "Tables initialized"
 }
 
 function start_api_service() {
-    echo "------Starting FastAPI application-------"
-    uvicorn src.entry_points.fastapi.main:app_factory --factory --reload --port 8001 --host 0.0.0.0
+    echo "Starting FastAPI application..."
+    uvicorn src.entrypoints.fastapi_app:app_factory --factory --reload --port 8001 --host 0.0.0.0
 }
 
 function start_rmq_service {
-    echo "------Connecting to RabbitMQ------"
+    echo "Connecting to RabbitMQ..."
     python3 -c "
-from src.entry_points.rmq import start_service
+from src.entrypoints.rabbitmq_consumer import start_service
 start_service()
 "
 }

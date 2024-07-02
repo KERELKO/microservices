@@ -1,13 +1,15 @@
-import asyncio
 from dataclasses import asdict
+import asyncio
 import functools
 import json
+
 import pika
 
-from src.dto.domain import UserDTO
-from src.exceptions import IncorrectCredentialsException
-from src.config import config
-from src.services import AuthService
+from src.common.dto import UserReadDTO
+from src.common.exceptions import IncorrectCredentialsException
+from src.common.config import get_conf
+from src.common.di import Container
+from src.services.auth import AuthService
 
 
 def sync(f):
@@ -24,14 +26,14 @@ async def handle_request(ch, method, properties: pika.BasicProperties, body: str
         'meta': {'errors': None},
     }
     request = json.loads(body)
-    service = AuthService()
+    service = Container.resolve(AuthService)
     token = request['token']
     try:
         u = await service.get_user_by_token(token)
     except IncorrectCredentialsException:
         response['meta']['errors'] = IncorrectCredentialsException.__name__
     else:
-        user_data = asdict(UserDTO(id=u.id, username=u.username, email=u.email))
+        user_data = asdict(UserReadDTO(id=u.id, username=u.username, email=u.email))
         response['data'] = user_data
     ch.basic_publish(
         exchange='',
@@ -44,8 +46,9 @@ async def handle_request(ch, method, properties: pika.BasicProperties, body: str
 
 
 def start_service():
+    conf = get_conf()
     connection = pika.BlockingConnection(
-        parameters=pika.ConnectionParameters(host=config.RMQ_HOST, port=config.RMQ_PORT),
+        parameters=pika.ConnectionParameters(host=conf.RMQ_HOST, port=conf.RMQ_PORT),
     )
     channel = connection.channel()
     channel.queue_declare('auth_queue')

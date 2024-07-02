@@ -1,5 +1,8 @@
+from functools import cache
 import os
 from dataclasses import dataclass
+
+from passlib.context import CryptContext
 
 
 @dataclass(eq=False, repr=False, slots=True, frozen=True)
@@ -20,6 +23,8 @@ class Config:
     ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
+    CRYPTO_CONTEXT = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
     @property
     def postgres_uri(self) -> str:
         user_pwd = f'{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}'
@@ -28,4 +33,6 @@ class Config:
         return connection_string
 
 
-config = Config()
+@cache
+def get_conf() -> Config:
+    return Config()

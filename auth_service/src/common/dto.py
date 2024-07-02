@@ -9,7 +9,7 @@ class UserReadDTO:
 
 
 @dataclass
-class UserDTO:
+class UserInputDTO:
     id: int | None = None
     username: str = ''
     password: str = ''
@@ -20,5 +20,5 @@ class UserDTO:
 class UserSecureDTO:
     id: int | None = None
     username: str = ''
-    email: str = ''
     hashed_password: str = ''
+    email: str = ''

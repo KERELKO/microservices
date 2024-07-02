@@ -1,27 +1,9 @@
 from typing import Any
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String
 
-from src.dto.domain import UserSecureDTO
-from src.config import config
-
-
-engine = create_async_engine(config.postgres_uri)
-async_session_factory = async_sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False,
-)
-
-
-def init_tables():
-    import asyncio
-
-    async def create_db():
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-
-    asyncio.run(create_db())
+from src.common.dto import UserSecureDTO
 
 
 class Base(DeclarativeBase):
