@@ -14,5 +14,4 @@ class Product:
 class User:
     id: str = ''
     username: str = ''
-    password: str = ''
-    token: str = ''
+    email: str = ''

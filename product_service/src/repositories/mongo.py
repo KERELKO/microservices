@@ -1,8 +1,8 @@
 from mongorepo import Access
 from mongorepo.asyncio.decorators import async_mongo_repository
 
-from src.config import config
-from src.models import Product
+from src.config import get_conf
+from src.dto import Product
 
 from .base import AbstractRepository
 
@@ -12,7 +12,7 @@ class ProductMongoRepository(AbstractRepository[Product]):
     class Meta:
         dto = Product
         id_field = 'id'
-        collection = config.get_async_mongo_client()['products_db']['products']
+        collection = get_conf().get_async_mongo_client()['products_db']['products']
 
     async def get_list(self, offset: int = 0, limit: int = 20) -> list[Product]:
         return await self._get_list(offset=offset, limit=limit)  # type: ignore

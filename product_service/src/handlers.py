@@ -1,50 +1,42 @@
-from typing import Annotated, Any
+from dataclasses import asdict
+from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException
 
-from src.services.impl import ProductService, RPCAuthClient
+from src.services.base import AbstractAuthService, AbstractProductService
+from src.container import Container
 
-from .schemas import ProductSchema, UserSchema
-from .models import Product
+from .schemas import ProductSchema, UserSchema, Response
+from .dto import Product
 
 
 router = APIRouter(prefix='/products', tags=['products'])
 
 
-def get_current_user(token: Annotated[str | None, Cookie()] = None) -> UserSchema:
+async def get_current_user(token: Annotated[str | None, Cookie()] = None) -> UserSchema:
     if not token:
         raise HTTPException(401)
-    service = RPCAuthClient()
-    response = service.call({'token': token})
-
-    if response['meta']['errors']:
-        raise HTTPException(403)
-
-    if response['data'] is not None:
-        u = response['data']
-        user = UserSchema(id=u['id'], username=u['username'], email=u['email'])
-
-    return user
+    service = Container.resolve(AbstractAuthService)
+    try:
+        user = await service.get_user_by_token(token=token)
+    except Exception as e:
+        raise HTTPException(500, detail=str(e))
+    return UserSchema(**asdict(user))
 
 
-@router.get('', response_model=list[ProductSchema])
+@router.get('', response_model=Response[list[ProductSchema]])
 async def get_products_list(
     offset: int,
     limit: int,
-    user: Annotated[str, Depends(get_current_user)],
-) -> list[ProductSchema]:
-    service = ProductService()
+    user: Annotated[UserSchema, Depends(get_current_user)],
+) -> Response[list[ProductSchema]]:
+    service = Container.resolve(AbstractProductService)
     products: list[Product] = await service.get_list(offset=offset, limit=limit)
-    return [ProductSchema.from_model(product) for product in products]
+    return Response(data=[ProductSchema.from_dto(product) for product in products], status='OK')
 
 
-@router.post('', response_model=dict[str, str])
-async def create_product(product: ProductSchema) -> dict[str, str]:
-    service = ProductService()
+@router.post('', response_model=Response[None])
+async def create_product(product: ProductSchema) -> Response[None]:
+    service = Container.resolve(AbstractProductService)
     await service.create(Product(**product.model_dump()))
-    return {'status': 'OK'}
-
-
-@router.get('/ping')
-async def ping(token: Annotated[str, Cookie()]) -> dict[str, Any]:
-    return {'token': token}
+    return Response(data=None, status='OK')

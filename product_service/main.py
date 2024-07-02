@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from src.handlers import router as product_router
 
 

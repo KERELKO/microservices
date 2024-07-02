@@ -1,20 +1,19 @@
-import json
-from typing import Any
+import asyncio
 
-import pika
+import aio_pika as apika
 import uuid
+import orjson
 
 from src.repositories.base import AbstractRepository
-from src.repositories.mongo import ProductMongoRepository
-from src.models import Product
-from src.config import config
+from src.dto import Product, User
+from src.config import get_conf
 
-from .base import AbstractService
+from .base import AbstractAuthService, AbstractProductService
 
 
-class ProductService(AbstractService[Product]):
-    def __init__(self, repository: AbstractRepository | None = None) -> None:
-        self.repo = ProductMongoRepository()
+class ProductService(AbstractProductService[Product]):
+    def __init__(self, repository: AbstractRepository) -> None:
+        self.repo = repository
 
     async def get_list(self, offset: int = 0, limit: int = 20) -> list[Product]:
         products = await self.repo.get_list(offset=offset, limit=limit)
@@ -28,36 +27,38 @@ class ProductService(AbstractService[Product]):
         return product
 
 
-class RPCAuthClient:
-    def __init__(self, host: str = config.RMQ_HOST, port: int = config.RMQ_PORT) -> None:
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host, port=port))
-        self.channel = self.connection.channel()
-        result = self.channel.queue_declare(queue='', exclusive=True)
-        self.callback_queue = result.method.queue
-
-        self.channel.basic_consume(
-            queue=self.callback_queue,
-            on_message_callback=self.on_response,
-            auto_ack=True,
-        )
+class RabbitAuthService(AbstractAuthService[User]):
+    def __init__(self, conn_string: str | None = None) -> None:
         self.corr_id: str | None = None
+        self.conn_string = conn_string if conn_string else get_conf().rabbitmq_connection_string
 
-    def on_response(self, ch, method, props: pika.BasicProperties, body: str | bytes) -> None:
-        if self.corr_id == props.correlation_id:
-            self.response = json.loads(body)
+    async def on_response(self, message: apika.IncomingMessage) -> None:
+        if self.corr_id == message.correlation_id:
+            self.response = orjson.loads(message.body)
+            await message.ack()
 
-    def call(self, data: dict[str, Any]) -> dict[str, Any]:
-        self.response: None | dict[str, Any] = None
+    async def get_user_by_token(self, token: str) -> User:
         self.corr_id = str(uuid.uuid4())
-        self.channel.basic_publish(
-            exchange='',
-            routing_key='auth_queue',
-            properties=pika.BasicProperties(
-                reply_to=self.callback_queue,
+        self.response = None
+
+        connection = await apika.connect_robust(url=self.conn_string, timeout=10)
+        channel = await connection.channel()
+        self.callback_queue = await channel.declare_queue('', exclusive=True)
+        await self.callback_queue.consume(self.on_response)  # type: ignore
+        await channel.default_exchange.publish(
+            apika.Message(
+                body=orjson.dumps({'token': token}),
                 correlation_id=self.corr_id,
+                reply_to=self.callback_queue.name
             ),
-            body=json.dumps(data)
+            routing_key='auth_queue'
         )
+
         while self.response is None:
-            self.connection.process_data_events(time_limit=3)
-        return self.response
+            await asyncio.sleep(0.02)
+
+        if self.response['data'] is not None and not self.response['meta']['errors']:
+            u = self.response['data']
+            user = User(id=u['id'], username=u['username'], email=u['email'])
+            return user
+        raise Exception('Failed to process the response', self.response)
