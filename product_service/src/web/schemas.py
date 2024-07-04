@@ -3,7 +3,7 @@ from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, Field
 
-from .dto import Product
+from src.common.dto import Product
 
 
 T = TypeVar('T')

@@ -4,13 +4,13 @@ from typing import Annotated
 from fastapi import APIRouter, Cookie, Depends, HTTPException
 
 from src.services.base import AbstractAuthService, AbstractProductService
-from src.container import Container
+from src.common.container import Container
 
+from src.common.dto import Product
 from .schemas import ProductSchema, UserSchema, Response
-from .dto import Product
 
 
-router = APIRouter(prefix='/products', tags=['products'])
+router = APIRouter(prefix='/v1/products', tags=['products'])
 
 
 async def get_current_user(token: Annotated[str | None, Cookie()] = None) -> UserSchema:

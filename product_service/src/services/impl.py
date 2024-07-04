@@ -5,8 +5,8 @@ import uuid
 import orjson
 
 from src.repositories.base import AbstractRepository
-from src.dto import Product, User
-from src.config import get_conf
+from src.common.dto import Product, User
+from src.common.config import get_conf
 
 from .base import AbstractAuthService, AbstractProductService
 
@@ -58,7 +58,7 @@ class RabbitAuthService(AbstractAuthService[User]):
             await asyncio.sleep(0.02)
 
         if self.response['data'] is not None and not self.response['meta']['errors']:
-            u = self.response['data']
-            user = User(id=u['id'], username=u['username'], email=u['email'])
+            data = self.response['data']
+            user = User(**data)
             return user
         raise Exception('Failed to process the response', self.response)

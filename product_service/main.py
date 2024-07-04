@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.handlers import router as product_router
+from src.web.handlers import router as product_router
 
 
 def app_factory() -> FastAPI:
