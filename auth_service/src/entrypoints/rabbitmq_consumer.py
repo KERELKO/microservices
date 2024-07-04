@@ -1,10 +1,10 @@
 from dataclasses import asdict
+
 import asyncio
-import functools
-import json
+import orjson
 
-import pika
-
+import aio_pika as apika
+from pamqp import commands as spec
 from src.common.dto import UserReadDTO
 from src.common.exceptions import IncorrectCredentialsException
 from src.common.config import get_conf
@@ -12,20 +12,12 @@ from src.common.di import Container
 from src.services.auth import AuthService
 
 
-def sync(f):
-    @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        return asyncio.get_event_loop().run_until_complete(f(*args, **kwargs))
-    return wrapper
-
-
-@sync
-async def handle_request(ch, method, properties: pika.BasicProperties, body: str | bytes) -> None:
+async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
     response = {
         'data': None,
         'meta': {'errors': None},
     }
-    request = json.loads(body)
+    request = orjson.loads(message.body)
     service = Container.resolve(AuthService)
     token = request['token']
     try:
@@ -35,27 +27,34 @@ async def handle_request(ch, method, properties: pika.BasicProperties, body: str
     else:
         user_data = asdict(UserReadDTO(id=u.id, username=u.username, email=u.email))
         response['data'] = user_data
-    ch.basic_publish(
+    await message.channel.basic_publish(
         exchange='',
-        routing_key=properties.reply_to,
-        properties=pika.BasicProperties(correlation_id=properties.correlation_id),
-        body=json.dumps(response)
+        routing_key=message.reply_to,  # type: ignore
+        properties=spec.Basic.Properties(correlation_id=message.properties.correlation_id),
+        body=orjson.dumps(response)
     )
 
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    await message.channel.basic_ack(delivery_tag=message.delivery_tag)  # type: ignore
 
 
-def start_service():
+async def start_service(loop: asyncio.AbstractEventLoop) -> None:
     conf = get_conf()
-    connection = pika.BlockingConnection(
-        parameters=pika.ConnectionParameters(host=conf.RMQ_HOST, port=conf.RMQ_PORT),
-    )
-    channel = connection.channel()
-    channel.queue_declare('auth_queue')
-    channel.basic_qos(prefetch_count=1)
-    channel.basic_consume(queue='auth_queue', on_message_callback=handle_request)
-    channel.start_consuming()
+    connection = await apika.connect_robust(host=conf.RMQ_HOST, port=conf.RMQ_PORT, timeout=25)
+
+    async with connection:
+        queue_name = 'auth_queue'
+
+        channel: apika.abc.AbstractChannel = await connection.channel()
+
+        queue: apika.abc.AbstractQueue = await channel.declare_queue(queue_name)
+
+        async with queue.iterator() as queue_iter:
+            async for message in queue_iter:
+                async with message.process():
+                    await handle_request(message)
 
 
-if __name__ == '__main__':
-    start_service()
+def main() -> None:
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_service(loop))
+    loop.close()

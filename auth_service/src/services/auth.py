@@ -18,7 +18,7 @@ class AuthService:
 
     async def get_user(self, username: str) -> UserReadDTO | None:
         _user = await self.repo.get_by_username(username=username)
-        return self._safe(_user) if _user else None
+        return self._safe_user(_user) if _user else None
 
     async def get_user_by_token(self, token: str) -> UserReadDTO:
         """Returns a user or raises `IncorrectCredentialsException` exception"""
@@ -45,9 +45,9 @@ class AuthService:
             email=dto.email,
         )
         new_user = await self.repo.add(user)
-        return self._safe(new_user)
+        return self._safe_user(new_user)
 
-    def _safe(self, user_secure: UserSecureDTO) -> UserReadDTO:
+    def _safe_user(self, user_secure: UserSecureDTO) -> UserReadDTO:
         user_data = asdict(user_secure)
         if 'password' in user_data:
             user_data.pop('password')
@@ -61,7 +61,7 @@ class AuthService:
             return False
         if not self.verify_password(password, user.hashed_password):
             return False
-        return self._safe(user)
+        return self._safe_user(user)
 
     async def login(self, username: str, password: str) -> str:
         user: UserReadDTO | bool = await self.authenticate_user(username, password)

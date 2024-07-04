@@ -17,8 +17,8 @@ function start_api_service() {
 function start_rmq_service {
     echo "Connecting to RabbitMQ..."
     python3 -c "
-from src.entrypoints.rabbitmq_consumer import start_service
-start_service()
+from src.entrypoints.rabbitmq_consumer import main
+main()
 "
 }
 
