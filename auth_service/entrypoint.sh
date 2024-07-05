@@ -22,8 +22,17 @@ main()
 "
 }
 
+function start_grpc_service {
+    echo "Run gRPC service..."
+    python3 -c "
+from src.entrypoints.grpc_server import main
+main()
+"
+}
+
 
 init_tables
 start_api_service &
-start_rmq_service &
+# start_rmq_service &
+start_grpc_service & 
 wait

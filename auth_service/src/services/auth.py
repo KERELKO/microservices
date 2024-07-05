@@ -14,16 +14,17 @@ from src.storages.repositories.base import AbstractUserRepository
 class AuthService:
     def __init__(self, repository: AbstractUserRepository) -> None:
         self.repo = repository
-        self.pwd_context = get_conf().CRYPTO_CONTEXT
+        self.conf = get_conf()
+        self.pwd_context = self.conf.CRYPTO_CONTEXT
 
     async def get_user(self, username: str) -> UserReadDTO | None:
-        _user = await self.repo.get_by_username(username=username)
-        return self._safe_user(_user) if _user else None
+        user = await self.repo.get_by_username(username=username)
+        return self._safe_user(user) if user else None
 
     async def get_user_by_token(self, token: str) -> UserReadDTO:
         """Returns a user or raises `IncorrectCredentialsException` exception"""
         try:
-            payload = jwt.decode(token, get_conf().SECRET_KEY, algorithms=[get_conf().ALGORITHM])
+            payload = jwt.decode(token, self.conf.SECRET_KEY, algorithms=[self.conf.ALGORITHM])
             username: str = payload.get('sub')
             if username is None:
                 raise IncorrectCredentialsException
@@ -67,7 +68,7 @@ class AuthService:
         user: UserReadDTO | bool = await self.authenticate_user(username, password)
         if user is False:
             raise IncorrectCredentialsException
-        access_token_expires = timedelta(minutes=get_conf().ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token_expires = timedelta(minutes=self.conf.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = self.create_access_token(
             data={'sub': user.username}, expires_delta=access_token_expires,  # type: ignore
         )
@@ -89,8 +90,8 @@ class AuthService:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
             expire = datetime.now(timezone.utc) + timedelta(
-                minutes=get_conf().ACCESS_TOKEN_EXPIRE_MINUTES
+                minutes=self.conf.ACCESS_TOKEN_EXPIRE_MINUTES
             )
         to_encode.update({'exp': expire})
-        encoded_jwt = jwt.encode(to_encode, get_conf().SECRET_KEY, algorithm=get_conf().ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, self.conf.SECRET_KEY, algorithm=self.conf.ALGORITHM)
         return encoded_jwt

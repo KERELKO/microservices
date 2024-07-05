@@ -13,6 +13,8 @@ pydantic-settings = "^2.3.4"
 punq = "^0.7.0"
 aio-pika = "^9.4.2"
 orjson = "^3.10.5"
+grpcio = "^1.64.1"
+grpcio-tools = "^1.64.1"
 
 
 [build-system]

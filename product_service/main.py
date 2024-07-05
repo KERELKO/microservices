@@ -5,6 +5,6 @@ from src.web.handlers import router as product_router
 
 def app_factory() -> FastAPI:
     app = FastAPI(docs_url='/api/docs')
-    app.include_router(product_router)
+    app.include_router(prefix='/api', router=product_router)
 
     return app

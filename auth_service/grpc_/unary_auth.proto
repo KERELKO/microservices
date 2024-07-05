@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package unary;
+
+service AuthService {
+    rpc GetUserByToken(RequestUser) returns (Response) {} 
+}
+
+message RequestUser {
+    string token = 1;
+}
+
+message Response {
+    User data = 1;
+    repeated string errors = 2;
+    map<string, string> meta = 3;
+}
+
+message User {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+}

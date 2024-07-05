@@ -1,10 +1,10 @@
 from dataclasses import asdict
 
-import asyncio
 import orjson
 
 import aio_pika as apika
 from pamqp import commands as spec
+import uvloop
 from src.common.dto import UserReadDTO
 from src.common.exceptions import IncorrectCredentialsException
 from src.common.config import get_conf
@@ -15,7 +15,8 @@ from src.services.auth import AuthService
 async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
     response = {
         'data': None,
-        'meta': {'errors': None},
+        'meta': {},
+        'errors': [],
     }
     request = orjson.loads(message.body)
     service = Container.resolve(AuthService)
@@ -23,7 +24,7 @@ async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
     try:
         u = await service.get_user_by_token(token)
     except IncorrectCredentialsException:
-        response['meta']['errors'] = IncorrectCredentialsException.__name__
+        response['errors'] = IncorrectCredentialsException.__name__
     else:
         user_data = asdict(UserReadDTO(id=u.id, username=u.username, email=u.email))
         response['data'] = user_data
@@ -37,7 +38,7 @@ async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
     await message.channel.basic_ack(delivery_tag=message.delivery_tag)  # type: ignore
 
 
-async def start_service(loop: asyncio.AbstractEventLoop) -> None:
+async def start_service() -> None:
     conf = get_conf()
     connection = await apika.connect_robust(host=conf.RMQ_HOST, port=conf.RMQ_PORT, timeout=25)
 
@@ -55,6 +56,8 @@ async def start_service(loop: asyncio.AbstractEventLoop) -> None:
 
 
 def main() -> None:
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(start_service(loop))
-    loop.close()
+    uvloop.run(start_service())
+
+
+if __name__ == '__main__':
+    main()

@@ -1,4 +1,4 @@
-services:
+﻿services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -8,8 +8,6 @@ services:
     volumes:
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
-    env_file:
-      - .env
     networks:
       - network
 

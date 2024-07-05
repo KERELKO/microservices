@@ -7,11 +7,18 @@ from pydantic import Field
 
 class Config(BaseSettings):
     model_config = SettingsConfigDict(extra='ignore')
-    MONGO_DB_HOST: str
-    MONGO_DB_PORT: str
+    MONGO_DB_HOST: str = Field(default='mongodb')
+    MONGO_DB_PORT: int = Field(default=27017)
 
     RMQ_HOST: str = Field(default='rabbitmq')
     RMQ_PORT: int = Field(default=5672)
+
+    gRPC_HOST: str = Field(default='auth-app')
+    gRPC_PORT: int = Field(default=50051)
+
+    @property
+    def grpc_url(self) -> str:
+        return f'{self.gRPC_HOST}:{self.gRPC_PORT}'
 
     @property
     def mongodb_connection_string(self) -> str:
