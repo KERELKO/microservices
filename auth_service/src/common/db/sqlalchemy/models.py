@@ -1,7 +1,7 @@
 from typing import Any
 
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from src.common.dto import UserSecureDTO
 

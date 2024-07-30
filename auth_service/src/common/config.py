@@ -1,28 +1,27 @@
-import os
 from functools import cache
-from dataclasses import dataclass
+
+from pydantic_settings import BaseSettings
 
 from passlib.context import CryptContext
 
 
-@dataclass(eq=False, repr=False, slots=True, frozen=True)
-class Config:
+class Config(BaseSettings):
     DEBUG: bool = True
 
     POSTGRES_DIALECT: str = 'postgresql+asyncpg'
-    POSTGRES_PORT: int = int(os.getenv('POSTGRES_PORT', 5432))
-    POSTGRES_HOST: str = os.getenv('POSTGRES_HOST', 'db')
-    POSTGRES_USER: str = os.getenv('POSTGRES_USER', 'postgres')
-    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
-    POSTGRES_DB: str = os.getenv('POSTGRES_DB', 'db')
+    POSTGRES_PORT: int
+    POSTGRES_HOST: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
 
-    RMQ_HOST: str = os.getenv('RABBITMQ_HOST', 'rabbitmq')
-    RMQ_PORT: int = int(os.getenv('RABBITMQ_PORT', 5672))
+    RABBITMQ_HOST: str
+    RABBITMQ_PORT: int
 
-    SECRET_KEY: str = os.getenv('SECRET_KEY', 'secret_key')
+    SECRET_KEY: str
     ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    CRYPTO_CONTEXT = CryptContext(schemes=['bcrypt'], deprecated='auto')
+    CRYPTO_CONTEXT: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
     @property
     def postgres_uri(self) -> str:
@@ -34,4 +33,4 @@ class Config:
 
 @cache
 def get_conf() -> Config:
-    return Config()
+    return Config()  # type: ignore

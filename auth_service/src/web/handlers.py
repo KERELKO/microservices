@@ -1,17 +1,16 @@
 from dataclasses import asdict
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from src.common.dto import UserInputDTO
-from src.common.di import Container
 from src.common import exceptions
+from src.common.di import Container
+from src.common.dto import UserInputDTO
 from src.services.auth import AuthService
 from src.web.schemas import Token, UserIn, UserOut
 
 from .exceptions import IncorrectCredentialsException
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/token')
 router = APIRouter(prefix='/api/v1/auth')

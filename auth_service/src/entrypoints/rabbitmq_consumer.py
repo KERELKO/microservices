@@ -4,7 +4,9 @@ import orjson
 
 import aio_pika as apika
 from pamqp import commands as spec
+
 import uvloop
+
 from src.common.dto import UserReadDTO
 from src.common.exceptions import IncorrectCredentialsException
 from src.common.config import get_conf
@@ -40,7 +42,9 @@ async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
 
 async def start_service() -> None:
     conf = get_conf()
-    connection = await apika.connect_robust(host=conf.RMQ_HOST, port=conf.RMQ_PORT, timeout=25)
+    connection = await apika.connect_robust(
+        host=conf.RABBITMQ_HOST, port=conf.RABBITMQ_PORT, timeout=25,
+    )
 
     async with connection:
         queue_name = 'auth_queue'

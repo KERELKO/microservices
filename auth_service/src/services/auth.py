@@ -1,12 +1,12 @@
 from dataclasses import asdict
-from typing import Any
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 import jwt
 
 from src.common.config import get_conf
 from src.common.dto import UserInputDTO, UserReadDTO, UserSecureDTO
-from src.common.exceptions import IncorrectCredentialsException
+from src.common.exceptions import FailToAuthorizeException, IncorrectCredentialsException
 from src.common.utils import raise_exc
 from src.storages.repositories.base import AbstractUserRepository
 
@@ -56,17 +56,16 @@ class AuthService:
             user_data.pop('hashed_password')
         return UserReadDTO(**user_data)
 
-    async def authenticate_user(self, username: str, password: str) -> UserReadDTO | bool:
+    async def authenticate_user(self, username: str, password: str) -> UserReadDTO:
         user: UserSecureDTO | None = await self.repo.get_by_username(username=username)
-        if not user:
-            return False
-        if not self.verify_password(password, user.hashed_password):
-            return False
+        if not user or not self.verify_password(password, user.hashed_password):
+            raise FailToAuthorizeException
         return self._safe_user(user)
 
     async def login(self, username: str, password: str) -> str:
-        user: UserReadDTO | bool = await self.authenticate_user(username, password)
-        if user is False:
+        try:
+            user: UserReadDTO | bool = await self.authenticate_user(username, password)
+        except FailToAuthorizeException:
             raise IncorrectCredentialsException
         access_token_expires = timedelta(minutes=self.conf.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = self.create_access_token(
