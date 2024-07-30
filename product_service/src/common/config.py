@@ -17,7 +17,7 @@ class Config(BaseSettings):
     gRPC_PORT: int = Field(default=50051)
 
     @property
-    def grpc_url(self) -> str:
+    def grpc_uri(self) -> str:
         return f'{self.gRPC_HOST}:{self.gRPC_PORT}'
 
     @property

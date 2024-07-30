@@ -6,7 +6,7 @@ import punq
 from src.repositories.base import AbstractRepository
 from src.repositories.mongo import ProductMongoRepository
 from src.services.base import AbstractAuthService, AbstractProductService
-from src.services.impl import ProductService, RabbitAuthService, gRPCAuthService  # noqa
+from src.services.impl import ProductService, gRPCAuthService  # noqa
 
 
 ABC = TypeVar('ABC')

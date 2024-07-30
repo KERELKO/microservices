@@ -9,6 +9,7 @@ import aio_pika as apika
 import uuid
 import orjson
 
+from src.services.exceptions import AuthServiceException
 from src.repositories.base import AbstractRepository
 from src.common.dto import Product, User
 from src.common.config import get_conf
@@ -72,7 +73,7 @@ class RabbitAuthService(AbstractAuthService[User]):
 class gRPCAuthService(AbstractAuthService[User]):
     def __init__(self, url: str | None = None) -> None:
         self.conf = get_conf()
-        self.url = url if url else self.conf.grpc_url
+        self.url = url if url else self.conf.grpc_uri
 
     async def get_user_by_token(self, token: str) -> User:
         async with grpc.aio.insecure_channel(self.url) as channel:
@@ -83,4 +84,4 @@ class gRPCAuthService(AbstractAuthService[User]):
             _user: pb2.User = data
             user = User(id=str(_user.id), username=_user.username, email=_user.email)
             return user
-        raise Exception('Failed to process the response', response.errors)
+        raise AuthServiceException('Failed to process the response', response.errors)
