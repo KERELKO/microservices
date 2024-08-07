@@ -1,12 +1,14 @@
 from functools import cache
 
 from motor.motor_asyncio import AsyncIOMotorClient
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 
 class Config(BaseSettings):
     model_config = SettingsConfigDict(extra='ignore')
+
     MONGO_DB_HOST: str = Field(default='mongodb')
     MONGO_DB_PORT: int = Field(default=27017)
 
@@ -15,6 +17,8 @@ class Config(BaseSettings):
 
     gRPC_HOST: str = Field(default='auth-app')
     gRPC_PORT: int = Field(default=50051)
+
+    PROFILING: bool = True
 
     @property
     def grpc_uri(self) -> str:

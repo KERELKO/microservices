@@ -12,6 +12,7 @@ from src.web.schemas import Token, UserIn, UserOut
 
 from .exceptions import IncorrectCredentialsException
 
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/token')
 router = APIRouter(prefix='/api/v1/auth')
 

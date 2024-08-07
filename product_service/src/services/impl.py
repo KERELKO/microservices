@@ -85,3 +85,9 @@ class gRPCAuthService(AbstractAuthService[User]):
             user = User(id=str(_user.id), username=_user.username, email=_user.email)
             return user
         raise AuthServiceException('Failed to process the response', response.errors)
+
+
+class FakeAuthService(AbstractAuthService[User]):
+    async def get_user_by_token(self, token: str) -> User:
+        from uuid import uuid4
+        return User(id=f'{uuid4()}', username=f'test-user-token:{token}', email='test@user.com')

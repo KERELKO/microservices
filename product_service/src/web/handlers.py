@@ -16,7 +16,7 @@ router = APIRouter(prefix='/v1/products', tags=['products'])
 async def get_current_user(token: Annotated[str | None, Cookie()] = None) -> UserSchema:
     if not token:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-    service = Container.resolve(AbstractAuthService)
+    service: AbstractAuthService = Container.resolve(AbstractAuthService)
     try:
         user = await service.get_user_by_token(token=token)
     except Exception as e:
@@ -25,7 +25,7 @@ async def get_current_user(token: Annotated[str | None, Cookie()] = None) -> Use
 
 
 @router.get('', response_model=Response[list[ProductSchema]])
-async def get_products_list(
+async def get_product_list(
     offset: int,
     limit: int,
     user: Annotated[UserSchema, Depends(get_current_user)],
