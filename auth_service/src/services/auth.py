@@ -10,6 +10,8 @@ from src.common.exceptions import FailToAuthorizeException, IncorrectCredentials
 from src.common.utils import raise_exc
 from src.storages.repositories.base import AbstractUserRepository
 
+from .exceptions import NoPasswordException, NoUsernameException
+
 
 class AuthService:
     def __init__(self, repository: AbstractUserRepository) -> None:
@@ -22,11 +24,11 @@ class AuthService:
         return self._safe_user(user) if user else None
 
     async def get_user_by_token(self, token: str) -> UserReadDTO:
-        """Returns a user or raises `IncorrectCredentialsException` exception"""
+        """Returns a user or raises `IncorrectCredentialsException`"""
         try:
             payload = jwt.decode(token, self.conf.SECRET_KEY, algorithms=[self.conf.ALGORITHM])
-            username: str = payload.get('sub')
-            if username is None:
+            username: str | None = payload.get('sub', None)
+            if not username:
                 raise IncorrectCredentialsException
         except jwt.InvalidTokenError:
             raise IncorrectCredentialsException
@@ -34,12 +36,8 @@ class AuthService:
         return user if user else raise_exc(IncorrectCredentialsException())
 
     async def register_user(self, dto: UserInputDTO) -> UserReadDTO:
-        password = dto.password if dto.password else raise_exc(
-            Exception('Password was not provided'),
-        )
-        username = dto.username if dto.username else raise_exc(
-            Exception('Username was not provided'),
-        )
+        password = dto.password if dto.password else raise_exc(NoPasswordException())
+        username = dto.username if dto.username else raise_exc(NoUsernameException())
         user = UserSecureDTO(
             username=username,
             hashed_password=self.get_password_hash(password),
@@ -69,7 +67,7 @@ class AuthService:
             raise IncorrectCredentialsException
         access_token_expires = timedelta(minutes=self.conf.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = self.create_access_token(
-            data={'sub': user.username}, expires_delta=access_token_expires,  # type: ignore
+            data={'sub': user.username}, expires_delta=access_token_expires,
         )
         return access_token
 

@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(eq=False)
 class UserReadDTO:
     id: int | None = None
     username: str = ''
     email: str = ''
 
 
-@dataclass
+@dataclass(eq=False)
 class UserInputDTO:
     id: int | None = None
     username: str = ''
@@ -16,7 +16,7 @@ class UserInputDTO:
     email: str = ''
 
 
-@dataclass
+@dataclass(eq=False)
 class UserSecureDTO:
     id: int | None = None
     username: str = ''

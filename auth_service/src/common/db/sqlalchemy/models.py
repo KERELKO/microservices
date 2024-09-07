@@ -10,7 +10,7 @@ class Base(DeclarativeBase):
     ...
 
 
-class User(Base):
+class UserORM(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -19,9 +19,12 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(40), default='')
 
     def __repr__(self) -> str:
-        return f'User(id={self.id} username={self.username} email={self.email})'
+        return (
+            f'UserORM(id={self.id}, username={self.username}, '
+            f'email={self.email}, hashed_password={self.hashed_password})'
+        )
 
-    def as_dict(self) -> dict[str, Any]:
+    def asdict(self) -> dict[str, Any]:
         data = {
             'id': self.id,
             'username': self.username,
@@ -31,4 +34,4 @@ class User(Base):
         return data
 
     def to_dto(self) -> UserSecureDTO:
-        return UserSecureDTO(**self.as_dict())
+        return UserSecureDTO(**self.asdict())

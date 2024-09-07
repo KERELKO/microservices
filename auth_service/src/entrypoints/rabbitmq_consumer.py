@@ -7,6 +7,7 @@ from pamqp import commands as spec
 
 import uvloop
 
+from common.utils import raise_exc
 from src.common.dto import UserReadDTO
 from src.common.exceptions import IncorrectCredentialsException
 from src.common.config import get_conf
@@ -21,10 +22,10 @@ async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
         'errors': [],
     }
     request = orjson.loads(message.body)
-    service = Container.resolve(AuthService)
-    token = request['token']
+    service: AuthService = Container.resolve(AuthService)
+    token = t if (t := request.get('token', None)) else raise_exc(Exception('No token'))
     try:
-        u = await service.get_user_by_token(token)
+        u: UserReadDTO = await service.get_user_by_token(token)
     except IncorrectCredentialsException:
         response['errors'] = IncorrectCredentialsException.__name__
     else:
@@ -32,12 +33,14 @@ async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
         response['data'] = user_data
     await message.channel.basic_publish(
         exchange='',
-        routing_key=message.reply_to,  # type: ignore
+        routing_key=message.reply_to,  # type: ignore[reportArgumentType]
         properties=spec.Basic.Properties(correlation_id=message.properties.correlation_id),
         body=orjson.dumps(response)
     )
 
-    await message.channel.basic_ack(delivery_tag=message.delivery_tag)  # type: ignore
+    await message.channel.basic_ack(
+        delivery_tag=message.delivery_tag  # type: ignore[reportArgumentType]
+    )
 
 
 async def start_service() -> None:

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 function init_tables() {
-    echo "Starting to initialize tables..."
+    echo "Starting to initialize SQL tables..."
     python3 -c "
 from src.common.db.sqlalchemy.config import init_tables
 init_tables()
 "
-    echo "Tables initialized"
+    echo "==== SQL Tables initialized ===="
 }
 
 function start_api_service() {

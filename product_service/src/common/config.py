@@ -9,6 +9,8 @@ from pydantic import Field
 class Config(BaseSettings):
     model_config = SettingsConfigDict(extra='ignore')
 
+    DEBUG: bool = True
+
     MONGO_DB_HOST: str = Field(default='mongodb')
     MONGO_DB_PORT: int = Field(default=27017)
 
@@ -18,7 +20,11 @@ class Config(BaseSettings):
     gRPC_HOST: str = Field(default='auth-app')
     gRPC_PORT: int = Field(default=50051)
 
-    PROFILING: bool = True
+    _PORIFLING: bool | None = None
+
+    @property
+    def PROFILING(self) -> bool:
+        return self._PORIFLING if self._PORIFLING is not None else self.DEBUG
 
     @property
     def grpc_uri(self) -> str:
@@ -38,4 +44,4 @@ class Config(BaseSettings):
 
 @cache
 def get_conf() -> Config:
-    return Config()  # type: ignore
+    return Config()  # type: ignore[reportCallIssue]

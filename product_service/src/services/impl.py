@@ -1,4 +1,5 @@
 import asyncio
+from uuid import uuid4
 
 import grpc.experimental
 import grpc
@@ -36,7 +37,7 @@ class ProductService(AbstractProductService[Product]):
 class RabbitAuthService(AbstractAuthService[User]):
     def __init__(self, conn_string: str | None = None) -> None:
         self.corr_id: str | None = None
-        self.conn_string = conn_string if conn_string else get_conf().rabbitmq_connection_string
+        self.conn_string = conn_string or get_conf().rabbitmq_connection_string
 
     async def on_response(self, message: apika.IncomingMessage) -> None:
         if self.corr_id == message.correlation_id:
@@ -80,14 +81,15 @@ class gRPCAuthService(AbstractAuthService[User]):
             stub = pb2_grpc.AuthServiceStub(channel)
             response: pb2.Response = await stub.GetUserByToken(pb2.RequestUser(token=token))
             data = response.data
+
         if not response.errors and data:
             _user: pb2.User = data
             user = User(id=str(_user.id), username=_user.username, email=_user.email)
             return user
+
         raise AuthServiceException('Failed to process the response', response.errors)
 
 
 class FakeAuthService(AbstractAuthService[User]):
     async def get_user_by_token(self, token: str) -> User:
-        from uuid import uuid4
         return User(id=f'{uuid4()}', username=f'test-user-token:{token}', email='test@user.com')

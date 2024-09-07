@@ -33,7 +33,12 @@ class ProductSchema(BaseModel):
         return cls(**asdict(product))
 
 
-class UserSchema(BaseModel):
-    id: int | None = None
-    username: str = ''
-    email: str = ''
+class UserIn(BaseModel):
+    username: str
+    email: str | None = None
+
+
+class UserOut(BaseModel):
+    id: int
+    username: str
+    email: str | None = None

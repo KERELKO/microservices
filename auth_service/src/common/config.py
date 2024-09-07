@@ -33,4 +33,4 @@ class Config(BaseSettings):
 
 @cache
 def get_conf() -> Config:
-    return Config()  # type: ignore
+    return Config()  # type: ignore[reportCallIssue]
