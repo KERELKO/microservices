@@ -19,7 +19,7 @@ async def get_product_list(
     limit: int,
     user: Annotated[UserOut, Depends(get_current_user)],
 ) -> Response[list[ProductSchema]]:
-    service = Container.resolve(AbstractProductService)
+    service: AbstractProductService = Container.resolve(AbstractProductService)
     products: list[Product] = await service.get_list(offset=offset, limit=limit)
     return Response(data=[ProductSchema.from_dto(product) for product in products])
 
@@ -29,6 +29,6 @@ async def create_product(
     product: ProductSchema,
     user: Annotated[UserOut, Depends(get_current_user)],
 ) -> Response[None]:
-    service = Container.resolve(AbstractProductService)
+    service: AbstractProductService = Container.resolve(AbstractProductService)
     await service.create(Product(**product.model_dump()))
     return Response(data=None)

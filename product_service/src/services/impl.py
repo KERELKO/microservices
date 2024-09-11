@@ -74,7 +74,7 @@ class RabbitAuthService(AbstractAuthService[User]):
 class gRPCAuthService(AbstractAuthService[User]):
     def __init__(self, url: str | None = None) -> None:
         self.conf = get_conf()
-        self.url = url if url else self.conf.grpc_uri
+        self.url = url or self.conf.grpc_uri
 
     async def get_user_by_token(self, token: str) -> User:
         async with grpc.aio.insecure_channel(self.url) as channel:
