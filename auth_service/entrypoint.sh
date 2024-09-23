@@ -34,5 +34,5 @@ main()
 init_tables &
 start_api_service &
 start_rmq_service &
-# start_grpc_service & 
+start_grpc_service & 
 wait
