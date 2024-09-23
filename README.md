@@ -58,7 +58,7 @@ container.register(AbstractAuthService, instance=RabbitAuthService())
 4. Result is the same as in [Usage](README.md) section
 
 ## Testing
-To test functionality of the services you can use `Postman` or `pytest`, also you can use swagger, but only for endpoints that does not have `Cookie` requirements
+To test the functionality of the services, you can use `Postman` or `pytest`; you can also use Swagger, but only for endpoints that do not have `Cookie` requirements.
 > [!IMPORTANT]
 > At the moment (*23.09.2024*) API docs (Swagger) cannot set cookies, so it will always throw `401 Unauthorized` to *product-service* api calls
 
