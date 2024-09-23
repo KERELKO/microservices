@@ -7,9 +7,9 @@ from pamqp import commands as spec
 
 import uvloop
 
-from common.utils import raise_exc
+from src.common.utils import raise_exc
 from src.common.dto import UserReadDTO
-from src.common.exceptions import IncorrectCredentialsException
+from src.common.exceptions import DomainException
 from src.common.config import get_conf
 from src.common.di import Container
 from src.services.auth import AuthService
@@ -23,14 +23,16 @@ async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
     }
     request = orjson.loads(message.body)
     service: AuthService = Container.resolve(AuthService)
-    token = t if (t := request.get('token', None)) else raise_exc(Exception('No token'))
+
     try:
+        token = t if (t := request.get('token', None)) else raise_exc(DomainException('No token'))
         u: UserReadDTO = await service.get_user_by_token(token)
-    except IncorrectCredentialsException:
-        response['errors'] = IncorrectCredentialsException.__name__
+    except DomainException as e:
+        response['errors'].append(e.__repr__())
     else:
         user_data = asdict(UserReadDTO(id=u.id, username=u.username, email=u.email))
         response['data'] = user_data
+
     await message.channel.basic_publish(
         exchange='',
         routing_key=message.reply_to,  # type: ignore[reportArgumentType]

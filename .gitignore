@@ -2,3 +2,5 @@
 rabbitmq/
 mongodb/
 __pycache__/
+.pytest_cache/
+.$*

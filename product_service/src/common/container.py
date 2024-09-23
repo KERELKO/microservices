@@ -6,7 +6,7 @@ import punq
 from src.repositories.base import AbstractRepository
 from src.repositories.mongo import ProductMongoRepository
 from src.services.base import AbstractAuthService, AbstractProductService
-from src.services.impl import ProductService, gRPCAuthService
+from src.services.impl import ProductService, gRPCAuthService, RabbitAuthService  # noqa
 
 
 ABC = TypeVar('ABC')
@@ -28,7 +28,7 @@ class Container:
         container.register(AbstractRepository, ProductMongoRepository)
         container.register(AbstractProductService, ProductService)
 
-        # can be substituted with `FakeAuthService` or `RabbitAuthService`
+        # can be substituted with `FakeAuthService`, `RabbitAuthService` or `gRPCAuthService`
         container.register(AbstractAuthService, instance=gRPCAuthService())
 
         return container

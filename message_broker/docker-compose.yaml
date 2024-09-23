@@ -15,4 +15,5 @@ services:
 
 networks:
   microservices:
+    name: repo:microservices-example
     driver: bridge
