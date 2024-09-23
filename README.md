@@ -2,7 +2,7 @@
 
 *Simple microservices example of communication through gRPC and RabbitMQ*
 
-### Overview
+### Schema
 ![image](https://github.com/user-attachments/assets/f2c25a16-f6e9-499f-b62f-c13425db5eb3)
 
 ## Technologies
@@ -24,33 +24,51 @@
 ```
 git clone https://github.com/KERELKO/microservices
 ```
-2. Add `.env` files and fill them with proper variables in `.env.example` in each service. Run this commands from the root directory
+2. Copy the `.env.example` files to `.env` for each service and fill in the required environment variables. Run this commands from the root directory
 ```
 cd product_service
 cat .env.example > .env
 cd ../auth_service
 cat .env.example > .env
 ```
-3. Run services with *Docker* in the root directory with command
+3. Run services with command
 ```
 ./entrypoint.sh
 ```
+The `./entrypoint.sh` script starts up the necessary *Docker* containers
+
 ### Usage
 After installing and running *Docker containers* you must see API docs on your 
 local machine on the url `http://127.0.0.1:8001/api/docs` (*auth-service*) and `http://127.0.0.1:8000/api/docs` (*product-service*)
 
+## How to use RabbitMQ RPC instead of gRPC
+1. Go to `/product_service/src/common/container.py`
+2. Replace line
+```py
+container.register(AbstractAuthService, instance=gRPCAuthService())
+```
+with 
+```py
+container.register(AbstractAuthService, instance=RabbitAuthService())
+```
+3. Run the following command in the root directory
+```
+./entrypoint.rmq.sh
+```
+4. Result is the same as in [Usage](README.md) section
+
 ## Testing
 To test functionality of the services you can use `Postman` or `pytest`, also you can use swagger, but only for endpoints that does not have `Cookie` requirements
 > [!IMPORTANT]
-> On the moment (*23.09.2024*) API docs (swagger) cannot set cookies, so it will always throw `401 Unauthorized` to *product-service* api calls
+> At the moment (*23.09.2024*) API docs (Swagger) cannot set cookies, so it will always throw `401 Unauthorized` to *product-service* api calls
 
 ### Pytest
-You can run tests with pytest in *product-service* with command (only in `product_service` directory) 
+You can run tests with pytest in *product-service* with command (only in `product_service` directory):
 ```
 pytest tests/
 ```
 this command will execute all available tests for the *product-service*  
-there are available e2e tests that ensure communication with *auth-service* and *product-service*
+there are available only e2e tests that ensure communication with *auth-service* and *product-service*
 ## Project Structure
 ```
 .
