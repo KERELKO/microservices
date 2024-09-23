@@ -1,4 +1,4 @@
-version: latest
+version: '3.8'
 
 services:
   product-app:
@@ -15,7 +15,7 @@ services:
       - mongo-express
     command: uvicorn main:app_factory --factory --port 8000 --host 0.0.0.0 --reload
     networks:
-      - network
+      - microservices
 
   mongodb:
     container_name: mongo-main
@@ -27,7 +27,7 @@ services:
     volumes:
       - ./mongodb/data:/mongodb/data
     networks:
-      - network
+      - microservices
 
   mongo-express:
     image: mongo-express
@@ -39,10 +39,9 @@ services:
     depends_on:
       - mongodb
     networks:
-      - network
+      - microservices
 
 networks:
-  network:
+  microservices:
+    name: repo:microservices-example
     driver: bridge
-    name: microservices
-    external: true

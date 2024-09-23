@@ -1,9 +1,11 @@
 from dataclasses import asdict
 from typing import Annotated
+
 from fastapi import Cookie, HTTPException, status
 
 from src.common.container import Container
 from src.services.base import AbstractAuthService
+from src.services.exceptions import AuthServiceException
 from src.web.schemas import UserOut
 
 
@@ -18,6 +20,6 @@ async def get_current_user(token: Annotated[str | None, Cookie()] = None) -> Use
     service: AbstractAuthService = Container.resolve(AbstractAuthService)
     try:
         user = await service.get_user_by_token(token=token)
-    except Exception as e:
+    except AuthServiceException as e:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     return UserOut(**asdict(user))

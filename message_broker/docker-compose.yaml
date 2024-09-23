@@ -1,4 +1,6 @@
-﻿services:
+﻿version: '3.8'
+
+services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -9,10 +11,8 @@
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
     networks:
-      - network
+      - microservices
 
 networks:
-  network:
+  microservices:
     driver: bridge
-    name: microservices
-    external: true

@@ -68,7 +68,7 @@ class RabbitAuthService(AbstractAuthService[User]):
             data = self.response['data']
             user = User(**data)
             return user
-        raise Exception('Failed to process the response', self.response)
+        raise AuthServiceException('Failed to process the response', self.response)
 
 
 class gRPCAuthService(AbstractAuthService[User]):
@@ -87,7 +87,7 @@ class gRPCAuthService(AbstractAuthService[User]):
             user = User(id=str(_user.id), username=_user.username, email=_user.email)
             return user
 
-        raise AuthServiceException('Failed to process the response', response.errors)
+        raise AuthServiceException('Failed to process the response', response.errors, self.url)
 
 
 class FakeAuthService(AbstractAuthService[User]):
