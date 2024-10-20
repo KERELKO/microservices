@@ -70,6 +70,9 @@ pytest tests/
 this command will execute all available tests for the *product-service*  
 there are available only e2e tests that ensure communication with *auth-service* and *product-service*
 ## Project Structure
+> [!NOTE]
+> If you are developing microservices, it's a good practice to separate each microservice in its own repository. Here all microservices are in one repository for illustrative purposes, particularly for communication between services. 
+
 ```
 .
 ├── auth_service
