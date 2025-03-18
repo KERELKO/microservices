@@ -12,6 +12,6 @@ def app_factory() -> FastAPI:
     app = FastAPI(docs_url='/api/docs')
     app.include_router(prefix='/api', router=product_router)
 
-    if config.PROFILING:
+    if config.profiling:
         app.add_middleware(PyinstrumentProfilerMiddleware)
     return app
