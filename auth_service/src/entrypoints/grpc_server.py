@@ -1,15 +1,15 @@
-from dataclasses import asdict
+import typing as t
 
 import uvloop
 
-import grpc
-import grpc.experimental
+import grpc  # type: ignore[import-untyped]
+import grpc.experimental  # type: ignore[import-untyped]
 import grpc_.unary_auth_pb2_grpc as pb2_grpc
 import grpc_.unary_auth_pb2 as pb2
 
-from src.common.exceptions import IncorrectCredentialsException
-from src.common.di import Container
-from src.services import auth
+from src.domain.exceptions import IncorrectCredentialsException
+from src.domain.service import AuthService
+from src.common.di import build_container
 
 
 class UnaryAuthService(pb2_grpc.AuthServiceServicer):
@@ -18,13 +18,13 @@ class UnaryAuthService(pb2_grpc.AuthServiceServicer):
         request: pb2.RequestUser,
         context: grpc.aio.ServicerContext,
     ) -> pb2.Response:
-        service = Container.resolve(auth.AuthService)
+        service: AuthService = build_container().resolve(AuthService)
         errors = []
-        meta = {}
+        meta: dict[str, t.Any] = {}
         user = None
         try:
             _user = await service.get_user_by_token(request.token)
-            user = pb2.User(**asdict(_user))
+            user = pb2.User(**_user.for_reading())
         except IncorrectCredentialsException:
             errors.append(IncorrectCredentialsException.__name__)
         response = pb2.Response(

@@ -1,4 +1,4 @@
-from dataclasses import asdict
+import typing as t
 
 import orjson
 
@@ -7,48 +7,49 @@ from pamqp import commands as spec
 
 import uvloop
 
-from src.common.utils import raise_exc
-from src.common.dto import UserReadDTO
-from src.common.exceptions import DomainException
 from src.common.config import get_conf
-from src.common.di import Container
-from src.services.auth import AuthService
+from src.domain.entities import User
+from src.common.utils import raise_exc
+from src.common.di import build_container
+from src.domain.exceptions import DomainException
+from src.domain.service import AuthService
 
 
 async def handle_request(message: apika.abc.AbstractIncomingMessage) -> None:
-    response = {
+    container = build_container()
+    response: dict[str, t.Any] = {
         'data': None,
         'meta': {},
         'errors': [],
     }
     request = orjson.loads(message.body)
-    service: AuthService = Container.resolve(AuthService)
+    service: AuthService = container.resolve(AuthService)
 
     try:
-        token = t if (t := request.get('token', None)) else raise_exc(DomainException('No token'))
-        u: UserReadDTO = await service.get_user_by_token(token)
+        token = tk if (tk := request.get('token', None)) else raise_exc(DomainException('No token'))
+        u: User = await service.get_user_by_token(token)
     except DomainException as e:
         response['errors'].append(e.__repr__())
     else:
-        user_data = asdict(UserReadDTO(id=u.id, username=u.username, email=u.email))
+        user_data = u.for_reading()
         response['data'] = user_data
 
     await message.channel.basic_publish(
         exchange='',
-        routing_key=message.reply_to,  # type: ignore[reportArgumentType]
+        routing_key=message.reply_to,  # type: ignore[arg-type]
         properties=spec.Basic.Properties(correlation_id=message.properties.correlation_id),
         body=orjson.dumps(response)
     )
 
     await message.channel.basic_ack(
-        delivery_tag=message.delivery_tag  # type: ignore[reportArgumentType]
+        delivery_tag=message.delivery_tag  # type: ignore[arg-type]
     )
 
 
 async def start_service() -> None:
     conf = get_conf()
     connection = await apika.connect_robust(
-        host=conf.RABBITMQ_HOST, port=conf.RABBITMQ_PORT, timeout=25,
+        host=conf.rabbitmq_host, port=conf.rabbitmq_port, timeout=25,
     )
 
     async with connection:

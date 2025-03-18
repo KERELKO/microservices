@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.web.handlers import router as auth_router
+from src.api.v1.handlers import router as auth_router
 
 
 def app_factory() -> FastAPI:

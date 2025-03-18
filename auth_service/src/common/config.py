@@ -1,36 +1,37 @@
 from functools import cache
 
 from pydantic_settings import BaseSettings
+from pydantic import Field
 
-from passlib.context import CryptContext
+from passlib.context import CryptContext  # type: ignore
 
 
 class Config(BaseSettings):
-    DEBUG: bool = True
+    debug: bool = True
 
-    POSTGRES_DIALECT: str = 'postgresql+asyncpg'
-    POSTGRES_PORT: int
-    POSTGRES_HOST: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
+    postgres_dialect: str = 'postgresql+asyncpg'
+    postgres_port: int = Field(alias='POSTGRES_PORT')
+    postgres_host: str = Field(alias='POSTGRES_HOST')
+    postgres_user: str = Field(alias='POSTGRES_USER')
+    postgres_password: str = Field(alias='POSTGRES_PASSWORD')
+    postgres_db: str = Field(alias='POSTGRES_DB')
 
-    RABBITMQ_HOST: str
-    RABBITMQ_PORT: int
+    rabbitmq_host: str = Field(alias='RABBITMQ_HOST')
+    rabbitmq_port: int = Field(alias='RABBITMQ_PORT')
 
-    SECRET_KEY: str
-    ALGORITHM: str = 'HS256'
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    CRYPTO_CONTEXT: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
+    secret_key: str = Field(alias='SECRET_KEY')
+    algorithm: str = 'HS256'
+    access_token_expire_minutes: int = Field(alias='ACCESS_TOKEN_EXPIRE_MINUTES', default=30)
+    crypto_context: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
     @property
     def postgres_uri(self) -> str:
-        user_pwd = f'{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}'
-        host_port = f'{self.POSTGRES_HOST}:{self.POSTGRES_PORT}'
-        connection_string = f'{self.POSTGRES_DIALECT}://{user_pwd}@{host_port}/{self.POSTGRES_DB}'
+        user_pwd = f'{self.postgres_user}:{self.postgres_password}'
+        host_port = f'{self.postgres_host}:{self.postgres_port}'
+        connection_string = f'{self.postgres_dialect}://{user_pwd}@{host_port}/{self.postgres_db}'
         return connection_string
 
 
 @cache
 def get_conf() -> Config:
-    return Config()  # type: ignore[reportCallIssue]
+    return Config()  # type: ignore[call-arg]

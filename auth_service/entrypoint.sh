@@ -3,7 +3,7 @@
 function init_tables() {
     echo "Starting to initialize SQL tables..."
     python3 -c "
-from src.common.db.sqlalchemy.config import init_tables
+from src.infrastructure.db.sqlalchemy.config import init_tables
 init_tables()
 "
     echo "==== SQL Tables initialized ===="
@@ -30,7 +30,7 @@ main()
 "
 }
 
-
+sleep 5
 init_tables &
 start_api_service &
 start_rmq_service &

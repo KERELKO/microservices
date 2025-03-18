@@ -3,7 +3,7 @@ from typing import NoReturn
 import bcrypt
 
 
-def raise_exc(exc: Exception) -> NoReturn:
+def raise_exc(exc: Exception | type[Exception]) -> NoReturn:
     raise exc
 
 

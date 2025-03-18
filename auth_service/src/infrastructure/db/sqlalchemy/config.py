@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 
 from src.common.config import get_conf
 
-from .models import Base
+from .models import mapper_registry
 
 
 engine = create_async_engine(get_conf().postgres_uri)
@@ -16,6 +16,6 @@ def init_tables():
 
     async def create_db():
         async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+            await conn.run_sync(mapper_registry.metadata.create_all)
 
     asyncio.run(create_db())

@@ -1,0 +1,151 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.9">
+  <diagram name="Page-1" id="Wu56kwVXIhYhVKoNJAqK">
+    <mxGraphModel dx="2290" dy="882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t-LJTm8_7BNS_g35A11U-2" value="PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="149" y="470" width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-3" value="S3 для медіа" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="470" y="470" width="170" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.293;exitY=0.986;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="t-LJTm8_7BNS_g35A11U-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="331.02" y="308.03999999999996" as="sourcePoint" />
+            <mxPoint x="480" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-6" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.779;exitY=0.893;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.353;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="t-LJTm8_7BNS_g35A11U-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="399.05999999999995" y="295.02" as="sourcePoint" />
+            <mxPoint x="480" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-7" value="Фото техніки" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="470" y="370" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-8" value="дані про техніку та про користувачів" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="260" y="384" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-9" value="Бот для показу техніки" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="230" width="230" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-10" value="Адмін бот: реєтрації техніки, спілкування з клієнтами&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="-70" y="720" width="285" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-11" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.922;entryY=0.923;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-10" target="t-LJTm8_7BNS_g35A11U-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="550" y="520" as="sourcePoint" />
+            <mxPoint x="600" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-12" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.465;entryY=0.97;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.836;exitY=-0.042;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-10" target="t-LJTm8_7BNS_g35A11U-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="550" y="520" as="sourcePoint" />
+            <mxPoint x="600" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-13" value="Дані про технку" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="620" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-14" value="Адмін" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="-320" y="475" width="40" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.163;exitY=-0.051;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitPerimeter=0;fillColor=#6a00ff;strokeColor=#3700CC;strokeWidth=3;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-10" target="t-LJTm8_7BNS_g35A11U-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="190" y="640" as="sourcePoint" />
+            <mxPoint x="-60" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-19" value="Сповіщення про реєстрацію техніки" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-10" y="580" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-20" value="Користувач" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="70" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-21" value="Користувач" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="460" y="70" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-22" value="Користувач" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="70" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-26" value="задає питання про техніку" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="170" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-27" value="Публікатор подій" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-50" y="362.5" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-28" value="Чат адміна" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-210" y="452.5" width="100" height="147.5" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-31" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.028;entryY=0.424;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-14" target="t-LJTm8_7BNS_g35A11U-28">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="20" y="510" as="sourcePoint" />
+            <mxPoint x="70" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-35" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#60a917;strokeColor=#2D7600;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-20" target="t-LJTm8_7BNS_g35A11U-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="310" y="390" as="sourcePoint" />
+            <mxPoint x="360" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-36" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#60a917;strokeColor=#2D7600;entryX=0.6;entryY=0.083;entryDx=0;entryDy=0;exitX=0.056;exitY=0.392;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-9" target="t-LJTm8_7BNS_g35A11U-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="163.5" y="230" as="sourcePoint" />
+            <mxPoint x="196.5" y="336" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-37" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#60a917;strokeColor=#2D7600;entryX=1;entryY=0;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="71" y="440.5" as="sourcePoint" />
+            <mxPoint x="-120" y="452.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-39" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#e3c800;strokeColor=#B09500;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-22" target="t-LJTm8_7BNS_g35A11U-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="481" y="179" as="sourcePoint" />
+            <mxPoint x="290" y="191" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-40" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#e3c800;strokeColor=#B09500;entryX=1.007;entryY=0.131;entryDx=0;entryDy=0;exitX=0.362;exitY=0.887;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-27" target="t-LJTm8_7BNS_g35A11U-28">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-20" y="352.5" as="sourcePoint" />
+            <mxPoint x="-5" y="452.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-41" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#e3c800;strokeColor=#B09500;entryX=1;entryY=0;entryDx=0;entryDy=0;exitX=0.037;exitY=0.655;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-9" target="t-LJTm8_7BNS_g35A11U-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="165" y="290" as="sourcePoint" />
+            <mxPoint x="180" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-42" value="Хоче купити" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="310" y="170" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-43" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#e51400;strokeColor=#B20000;entryX=0.783;entryY=-0.016;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-21" target="t-LJTm8_7BNS_g35A11U-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="691" y="188" as="sourcePoint" />
+            <mxPoint x="500" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-44" value="Потрібні додаткові послуги" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="468" y="171" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-45" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#e51400;strokeColor=#B20000;exitX=0.095;exitY=0.653;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.607;entryY=0.01;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-27" target="t-LJTm8_7BNS_g35A11U-28">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="47" y="151" as="sourcePoint" />
+            <mxPoint x="-160" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t-LJTm8_7BNS_g35A11U-46" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;fillColor=#e51400;strokeColor=#B20000;entryX=0.947;entryY=0.453;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;entryPerimeter=0;" edge="1" parent="1" source="t-LJTm8_7BNS_g35A11U-9" target="t-LJTm8_7BNS_g35A11U-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="487" y="150" as="sourcePoint" />
+            <mxPoint x="460" y="249" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
