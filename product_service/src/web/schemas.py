@@ -4,8 +4,7 @@ from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, Field
 
-from src.common.dto import Product
-
+from src.domain.entities import Product
 
 T = TypeVar('T')
 

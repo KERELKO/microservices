@@ -1,5 +1,10 @@
-class ServiceException(Exception):
-    ...
+from abc import ABC, abstractmethod
+
+
+class AbstractAuthService[T](ABC):
+    @abstractmethod
+    async def get_user_by_token(self, token: str) -> T:
+        ...
 
 
 class AuthServiceException(Exception):

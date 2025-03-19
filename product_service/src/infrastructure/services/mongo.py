@@ -4,18 +4,18 @@ from mongorepo.implements.methods import (  # type: ignore[import-untyped]
 )
 
 from src.common.config import get_conf
-from src.common.dto import Product
 
-from .base import AbstractRepository as ARepo
+from src.domain.entities import Product
+from src.domain.services import AbstractProductService
 
 
 @implements(
-    ARepo,
-    GetMethod(ARepo.get, filters=['id']),
-    AddMethod(ARepo.create, dto='entity'),
-    GetListMethod(ARepo.get_list, filters=[], offset='offset', limit='limit'),
+    AbstractProductService,
+    GetMethod(AbstractProductService.get_by_id, filters=['id']),
+    AddMethod(AbstractProductService.create, dto='entity'),
+    GetListMethod(AbstractProductService.get_list, filters=[], offset='offset', limit='limit'),
 )
-class ProductMongoRepository:
+class ProductMongoService:
     class Meta:
         dto = Product
         id_field = 'id'

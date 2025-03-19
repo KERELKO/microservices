@@ -2,10 +2,11 @@ from functools import cache
 
 import punq  # type: ignore[import-untyped]
 
-from src.repositories.base import AbstractRepository
-from src.repositories.mongo import ProductMongoRepository
-from src.services.base import AbstractAuthService, AbstractProductService
-from src.services.impl import ProductService, gRPCAuthService, RabbitAuthService  # noqa
+from src.domain.services import AbstractProductService
+from src.infrastructure.services.mongo import ProductMongoService
+from src.infrastructure.services.auth import AbstractAuthService, FakeAuthService  # noqa
+from src.infrastructure.services.auth.grpc import GRPCAuthService
+from src.infrastructure.services.auth.rmq import RabbitAuthService  # noqa
 
 
 class Container:
@@ -18,11 +19,10 @@ class Container:
     @classmethod
     def _init(cls) -> punq.Container:
         container = punq.Container()
-        container.register(AbstractRepository, ProductMongoRepository)
-        container.register(AbstractProductService, ProductService)
+        container.register(AbstractProductService, ProductMongoService)
 
         # can be substituted with `FakeAuthService`, `RabbitAuthService` or `gRPCAuthService`
-        container.register(AbstractAuthService, instance=gRPCAuthService())
+        container.register(AbstractAuthService, instance=GRPCAuthService())
 
         return container
 
